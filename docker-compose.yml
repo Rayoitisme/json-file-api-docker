@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  go_db:
+    container_name: go_db
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:latest
+    container_name: zabbix-server
+    depends_on:
+      - go_db
+    environment:
+      DB_SERVER_HOST: go_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+    ports:
+      - "10051:10051"
+    volumes:
+      - zabbix-server:/var/lib/zabbix
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:latest
+    container_name: zabbix-web
+    depends_on:
+      - zabbix-server
+      - go_db
+    environment:
+      DB_SERVER_HOST: go_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+      ZBX_SERVER_HOST: zabbix-server
+      PHP_TZ: America/Sao_Paulo
+    ports:
+      - "8080:8080"
+    volumes:
+      - zabbix-web:/var/lib/zabbix
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:latest
+    container_name: zabbix-agent
+    depends_on:
+      - zabbix-server
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      ZBX_SERVER_PORT: 10051
+    ports:
+      - "10050:10050"
+
+volumes:
+  pgdata: {}
+  zabbix-server: {}
+  zabbix-web: {}

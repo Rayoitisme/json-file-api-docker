@@ -1,12 +1,12 @@
 'use client'
 import { useState } from "react";
+import { useGetDrinksQuery } from "./queries/drinks.query";
 
 export default function Home() {
-  const [data, setData] = useState([
-    { id: 1, name: "Item 1", quantity: 10 },
-    { id: 2, name: "Item 2", quantity: 20 },
-    { id: 3, name: "Item 3", quantity: 30 },
-  ]);
+
+  const { drinks } = useGetDrinksQuery()
+
+  const [data, setData] = useState(drinks);
 
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ name: "", quantity: "" });
@@ -48,7 +48,7 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {data?.map((item) => (
               <tr key={item.id} className="border-t border-gray-300">
                 <td className="px-4 py-2">
                   {editingId === item.id ? (

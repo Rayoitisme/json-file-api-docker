@@ -56,7 +56,29 @@ services:
       ZBX_SERVER_PORT: 10051
     ports:
       - "10050:10050"
+    nextjs-app:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    container_name: nextjs-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./website:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: production
+    command: ["yarn", "start"]
 
+  go-app:
+    build:
+      context: ./go-app
+    container_name: go-app
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./go-app:/app
+    command: ["go", "run", ""cmd/main.go""]
 volumes:
   pgdata: {}
   zabbix-server: {}

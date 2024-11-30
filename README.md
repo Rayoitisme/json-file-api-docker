@@ -18,3 +18,6 @@
   go get gorm.io/gorm@v1.25.11
   go get gorm.io/driver/postgres@v1.5.9
 ``` 
+
+# next.js 
+

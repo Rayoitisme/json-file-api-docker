@@ -1,4 +1,4 @@
-module DrinkRegistry
+module drink-registry
 
 go 1.23.0
 

@@ -3,6 +3,7 @@ package route
 import (
 	"drink-registry/controller"
 	"drink-registry/db"
+	"drink-registry/model"
 	"drink-registry/repository"
 	"drink-registry/usecase"
 
@@ -14,6 +15,7 @@ func DrinksRoutes(server *gin.Engine) {
 	if err != nil {
 		panic(err)
 	}
+	dbConnection.AutoMigrate(&model.Drinks{})
 
 	DrinksRepository := repository.NewDrinksRepository(dbConnection)
 
